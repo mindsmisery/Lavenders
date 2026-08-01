@@ -1,0 +1,74 @@
+<Application x:Class="Lavenders.UI.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Lavenders.UI.ViewModels"
+             xmlns:views="clr-namespace:Lavenders.UI.Views"
+             xmlns:converters="clr-namespace:Lavenders.UI.Converters"
+             xmlns:materialDesign="http://materialdesigninxaml.net">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml"/>
+                <ResourceDictionary Source="LavendersTheme.xaml"/>
+                <ResourceDictionary Source="Animations.xaml"/>
+                <ResourceDictionary Source="Resources/Strings.fi-FI.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+
+            <!-- Finnish formatting for dates and other culture-sensitive controls. -->
+            <Style TargetType="FrameworkElement">
+                <Setter Property="Language" Value="{DynamicResource LanguageTag}"/>
+                <Setter Property="TextElement.FontFamily" Value="{DynamicResource LavendersFont}"/>
+            </Style>
+
+            <Style TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{DynamicResource LavenderTextBrush}"/>
+            </Style>
+
+            <Style TargetType="TextBox" BasedOn="{StaticResource LavenderInputField}"/>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource LavenderInputCombo}"/>
+            <Style TargetType="DatePicker" BasedOn="{StaticResource LavenderDatePicker}"/>
+
+            <Style x:Key="LavenderDayCellStyle" TargetType="Border">
+                <Setter Property="CornerRadius" Value="14"/>
+                <Setter Property="Padding" Value="12"/>
+                <Setter Property="Background" Value="{DynamicResource LavenderDayGradient}"/>
+                <Setter Property="BorderBrush" Value="{DynamicResource LavenderBorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+                <Setter Property="SnapsToDevicePixels" Value="True"/>
+                <Setter Property="Effect" Value="{StaticResource SoftLavenderShadow}"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource LavenderAccentBrush}"/>
+                    </Trigger>
+                    <DataTrigger Binding="{Binding IsWeekend}" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LavenderWeekendBrush}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                        <Setter Property="Background" Value="{DynamicResource LavenderOutsideMonthBrush}"/>
+                        <Setter Property="Opacity" Value="0.78"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsToday}" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource LavenderTodayBrush}"/>
+                        <Setter Property="BorderBrush" Value="{DynamicResource LavenderPrimaryBrush}"/>
+                        <Setter Property="BorderThickness" Value="1.5"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource LavenderDeepBrush}"/>
+                        <Setter Property="BorderThickness" Value="2"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <DataTemplate DataType="{x:Type vm:WeekViewModel}">
+                <views:WeekViewControl/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                <views:SettingsView/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

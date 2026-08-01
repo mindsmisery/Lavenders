@@ -1,0 +1,175 @@
+<Window x:Class="Lavenders.UI.EventEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="{DynamicResource EditEventTitle}"
+        Icon="pack://application:,,,/Assets/Lavenders.ico"
+        SizeToContent="Height" MinHeight="520" Width="560"
+        ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen" Background="Transparent"
+        FontFamily="{DynamicResource LavendersFont}"
+        Opacity="0" RenderTransformOrigin="0.5,0.5">
+    <Window.RenderTransform><TranslateTransform/></Window.RenderTransform>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded"><BeginStoryboard Storyboard="{StaticResource SlideUp}"/></EventTrigger>
+    </Window.Triggers>
+
+    <Border Margin="18" Background="{DynamicResource LavenderCardBrush}" CornerRadius="18" Padding="24"
+            BorderBrush="{DynamicResource LavenderBorderBrush}" BorderThickness="1"
+            Effect="{StaticResource SoftLavenderShadow}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,18" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource EventDetails}" FontSize="22" FontWeight="SemiBold"
+                               Foreground="{DynamicResource LavenderDeepBrush}"/>
+                    <TextBlock Text="{DynamicResource EventDetailsDescription}" Margin="0,4,36,0"
+                               Foreground="{DynamicResource LavenderMutedTextBrush}"/>
+                </StackPanel>
+                <Button HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Style="{DynamicResource LavenderSecondaryButton}"
+                        Width="40" Height="40" MinHeight="40" Padding="0"
+                        ToolTip="{DynamicResource Close}" Click="Cancel_Click">
+                    <fa:IconBlock Icon="Close" FontSize="15"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
+            </Grid>
+
+            <StackPanel Grid.Row="1" Margin="0,0,0,14">
+                <TextBlock Text="{DynamicResource TitleLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
+                <TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                         Tag="{DynamicResource TitlePlaceholder}" Style="{DynamicResource LavenderInputField}"/>
+                <TextBlock Text="{Binding ValidationMessage}"
+                           Visibility="{Binding ValidationMessage, Converter={StaticResource StringToVisibilityConverter}}"
+                           Margin="3,6,0,0" FontSize="12"
+                           Foreground="{DynamicResource LavenderDangerBrush}"/>
+            </StackPanel>
+
+            <Grid Grid.Row="2" Margin="0,0,0,14">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="16"/>
+                    <ColumnDefinition Width="170"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="{DynamicResource DateLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
+                    <Border Height="44" CornerRadius="11" Background="{DynamicResource LavenderInputSurfaceBrush}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{DynamicResource LavenderBorderBrush}"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource LavenderDeepBrush}"/>
+                                    <Setter Property="BorderThickness" Value="1.5"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Grid>
+                        <DatePicker x:Name="EventDatePicker"
+                                    SelectedDate="{Binding SelectedDate, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"
+                                    SelectedDateFormat="Long" Style="{DynamicResource LavenderDatePicker}"
+                                    Loaded="EventDatePicker_Loaded"
+                                    CalendarOpened="EventDatePicker_CalendarOpened"
+                                    Height="42"
+                                    Padding="8,0,44,0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    VerticalContentAlignment="Center"
+                                    HorizontalContentAlignment="Left">
+                            <DatePicker.Resources>
+                                <Style TargetType="DatePickerTextBox" BasedOn="{StaticResource LavenderDateBox}"/>
+                            </DatePicker.Resources>
+                        </DatePicker>
+                        <Button Width="42" Height="42" HorizontalAlignment="Right"
+                                Margin="0,1,1,1" Padding="0"
+                                Background="{DynamicResource LavenderInputSurfaceBrush}" BorderThickness="0"
+                                Style="{DynamicResource LavenderNavigationButton}"
+                                Click="OpenDatePicker_Click"
+                                ToolTip="{DynamicResource ChooseDate}">
+                            <fa:IconBlock Icon="Calendar" FontSize="15"
+                                            Foreground="{DynamicResource LavenderDeepBrush}"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Margin="0,-2,0,2"/>
+                        </Button>
+                    </Grid>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="{DynamicResource TimeLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
+                    <Border Height="44" CornerRadius="11" Background="{DynamicResource LavenderInputSurfaceBrush}">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="BorderBrush" Value="{DynamicResource LavenderBorderBrush}"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                    <Setter Property="BorderBrush" Value="{DynamicResource LavenderDeepBrush}"/>
+                                    <Setter Property="BorderThickness" Value="1.5"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                        <materialDesign:TimePicker x:Name="EventTimePicker"
+                            SelectedTime="{Binding SelectedClockTime, UpdateSourceTrigger=PropertyChanged}"
+                            Is24Hours="True"
+                            WithSeconds="False"
+                            Height="42"
+                            Padding="10,0"
+                            FontSize="14"
+                            Foreground="{DynamicResource LavenderTextBrush}"
+                            BorderThickness="0"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Left"
+                            Loaded="EventTimePicker_Loaded"
+                            ToolTip="{DynamicResource ChooseTime}"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Grid.Row="3" Margin="0,0,0,18">
+                <TextBlock Text="{DynamicResource DescriptionLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
+                <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                         AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                         Tag="{DynamicResource DescriptionPlaceholder}" Style="{DynamicResource LavenderInputField}"
+                         MinHeight="130" MaxHeight="220" VerticalContentAlignment="Top"/>
+            </StackPanel>
+
+            <Border Grid.Row="4" Height="1" Background="{DynamicResource LavenderBorderBrush}" Margin="0,0,0,16"/>
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Command="{Binding DeleteCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                        Visibility="{Binding DeleteButtonVisibility}"
+                        Style="{DynamicResource LavenderSecondaryButton}"
+                        Foreground="{DynamicResource LavenderDangerBrush}"
+                        HorizontalAlignment="Left" MinWidth="105" Height="42" Padding="15,8">
+                    <StackPanel Orientation="Horizontal">
+                        <fa:IconBlock Icon="Trash" FontSize="14" Margin="0,0,7,0"
+                                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBlock Text="{DynamicResource Delete}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="{DynamicResource Cancel}" Style="{DynamicResource LavenderSecondaryButton}"
+                            Click="Cancel_Click" Margin="0,0,10,0" MinWidth="105" Height="42" Padding="16,8"/>
+                    <Button Content="{DynamicResource Save}" Style="{DynamicResource LavenderRippleButton}"
+                            Click="OK_Click" MinWidth="105" Height="42" Padding="16,8"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

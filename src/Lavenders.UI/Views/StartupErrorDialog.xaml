@@ -1,0 +1,38 @@
+<Window x:Class="Lavenders.UI.Views.StartupErrorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{DynamicResource StartupErrorWindowTitle}"
+        Icon="pack://application:,,,/Assets/Lavenders.ico"
+        Width="500" SizeToContent="Height" MinHeight="300"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource LavenderSoftBrush}"
+        FontFamily="{DynamicResource LavendersFont}">
+    <Border Margin="24" Padding="24" CornerRadius="16"
+            Background="{DynamicResource LavenderCardBrush}" BorderBrush="{DynamicResource LavenderDangerBrush}"
+            BorderThickness="1" Effect="{StaticResource SoftLavenderShadow}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="{DynamicResource StartupErrorTitle}"
+                       FontSize="20" FontWeight="SemiBold"
+                       Foreground="{DynamicResource LavenderDangerBrush}"/>
+            <TextBlock Grid.Row="1" Margin="0,10,0,0" TextWrapping="Wrap"
+                       Text="{DynamicResource StartupErrorDescription}"/>
+            <TextBlock Grid.Row="2" Margin="0,12,0,20" TextWrapping="Wrap"
+                       FontSize="12" Foreground="{DynamicResource LavenderMutedTextBrush}"
+                       Text="{Binding LogMessage}"/>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{DynamicResource Close}" Style="{DynamicResource LavenderSecondaryButton}"
+                        Width="105" Margin="0,0,10,0" IsCancel="True" Click="Close_Click"/>
+                <Button Content="{DynamicResource Retry}" Style="{DynamicResource LavenderRippleButton}"
+                        MinWidth="135" IsDefault="True" Click="Retry_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

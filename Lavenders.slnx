@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Lavenders.Core/Lavenders.Core.csproj" />
+    <Project Path="src/Lavenders.Data/Lavenders.Data.csproj" />
+    <Project Path="src/Lavenders.UI/Lavenders.UI.csproj" />
+    <Project Path="src/Lavenders.Tests/Lavenders.Tests.csproj" />
+  </Folder>
+</Solution>
