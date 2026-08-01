@@ -2,6 +2,13 @@
 
 All notable changes to Lavenders are documented here.
 
+## 1.0.1 - 2026-08-01
+
+### Fixed
+
+- Updated the GitHub Actions release workflow to use Node.js 24-compatible
+  versions of the official checkout and .NET setup actions.
+
 ## 1.0.0 - 2026-08-01
 
 Initial public release.
