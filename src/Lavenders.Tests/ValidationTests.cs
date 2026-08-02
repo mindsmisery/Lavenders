@@ -53,6 +53,37 @@ public class ValidationTests
         Assert.Equal(new DateTime(2026, 8, 3, 14, 35, 0, DateTimeKind.Local), viewModel.StartDateTime);
     }
 
+    [Fact]
+    public void EventEditViewModel_UsesSelectedStartAndEndTimes()
+    {
+        var date = new DateTime(2026, 8, 3);
+        var viewModel = new EventEditViewModel(date)
+        {
+            Title = "Meeting",
+            SelectedClockTime = date.AddHours(14).AddMinutes(35),
+            SelectedEndClockTime = date.AddHours(16)
+        };
+
+        Assert.True(viewModel.Validate());
+        var item = viewModel.CreateEvent();
+        Assert.Equal(date.AddHours(14).AddMinutes(35).ToUniversalTime(), item.StartDateTime);
+        Assert.Equal(date.AddHours(16).ToUniversalTime(), item.EndDateTime);
+    }
+
+    [Fact]
+    public void EventEditViewModel_RejectsEndTimeBeforeStartTime()
+    {
+        var date = new DateTime(2026, 8, 3);
+        var viewModel = new EventEditViewModel(date)
+        {
+            Title = "Meeting",
+            SelectedClockTime = date.AddHours(14),
+            SelectedEndClockTime = date.AddHours(13)
+        };
+
+        Assert.False(viewModel.Validate());
+    }
+
     private static Event ValidEvent()
     {
         var start = new DateTime(2026, 8, 3, 9, 0, 0, DateTimeKind.Utc);

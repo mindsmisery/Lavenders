@@ -20,7 +20,10 @@
     <sys:String x:Key="DateLabel">Date</sys:String>
     <sys:String x:Key="ChooseDate">Choose a date</sys:String>
     <sys:String x:Key="TimeLabel">Time</sys:String>
+    <sys:String x:Key="StartTimeLabel">Start time</sys:String>
+    <sys:String x:Key="EndTimeLabel">End time</sys:String>
     <sys:String x:Key="ChooseTime">Enter a time or choose it from the clock</sys:String>
+    <sys:String x:Key="ChooseEndTime">Enter an end time or choose it from the clock</sys:String>
     <sys:String x:Key="DescriptionLabel">Description</sys:String>
     <sys:String x:Key="DescriptionPlaceholder">Enter an event description...</sys:String>
     <sys:String x:Key="Delete">Delete</sys:String>
@@ -47,6 +50,7 @@
     <sys:String x:Key="ValidationTitleRequired">Give the event a title.</sys:String>
     <sys:String x:Key="ValidationDateRequired">Choose a date for the event.</sys:String>
     <sys:String x:Key="ValidationTimeRequired">Choose a valid time for the event.</sys:String>
+    <sys:String x:Key="ValidationEndTimeRequired">End time must be after start time.</sys:String>
     <sys:String x:Key="LoadFailedTitle">The calendar could not be loaded</sys:String>
     <sys:String x:Key="LoadFailedMessage">A database error occurred. Please try again shortly.</sys:String>
     <sys:String x:Key="EventAddedTitle">Event added</sys:String>

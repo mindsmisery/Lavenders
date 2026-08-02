@@ -60,6 +60,9 @@ public partial class MainWindowViewModel : ObservableObject
 
     private bool CanInstallUpdate() => IsUpdateAvailable && !IsUpdating;
 
+    partial void OnIsUpdateAvailableChanged(bool value) =>
+        InstallUpdateCommand.NotifyCanExecuteChanged();
+
     [RelayCommand]
     private void Home()
     {

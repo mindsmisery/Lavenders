@@ -5,7 +5,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         Title="{DynamicResource EditEventTitle}"
         Icon="pack://application:,,,/Assets/Lavenders.ico"
-        SizeToContent="Height" MinHeight="520" Width="560"
+        SizeToContent="Height" MinHeight="520" Width="700"
         ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True"
         WindowStartupLocation="CenterScreen" Background="Transparent"
         FontFamily="{DynamicResource LavendersFont}"
@@ -58,7 +58,9 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="170"/>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="150"/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{DynamicResource DateLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
@@ -106,7 +108,7 @@
                     </Border>
                 </StackPanel>
                 <StackPanel Grid.Column="2">
-                    <TextBlock Text="{DynamicResource TimeLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
+                    <TextBlock Text="{DynamicResource StartTimeLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
                     <Border Height="44" CornerRadius="11" Background="{DynamicResource LavenderInputSurfaceBrush}">
                     <Border.Style>
                         <Style TargetType="Border">
@@ -133,6 +135,36 @@
                             HorizontalContentAlignment="Left"
                             Loaded="EventTimePicker_Loaded"
                             ToolTip="{DynamicResource ChooseTime}"/>
+                    </Border>
+                </StackPanel>
+                <StackPanel Grid.Column="4">
+                    <TextBlock Text="{DynamicResource EndTimeLabel}" FontWeight="SemiBold" Margin="2,0,0,6"/>
+                    <Border Height="44" CornerRadius="11" Background="{DynamicResource LavenderInputSurfaceBrush}">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="BorderBrush" Value="{DynamicResource LavenderBorderBrush}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="BorderBrush" Value="{DynamicResource LavenderDeepBrush}"/>
+                                        <Setter Property="BorderThickness" Value="1.5"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <materialDesign:TimePicker x:Name="EventEndTimePicker"
+                            SelectedTime="{Binding SelectedEndClockTime, UpdateSourceTrigger=PropertyChanged}"
+                            Is24Hours="True"
+                            WithSeconds="False"
+                            Height="42"
+                            Padding="10,0"
+                            FontSize="14"
+                            Foreground="{DynamicResource LavenderTextBrush}"
+                            BorderThickness="0"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Left"
+                            Loaded="EventTimePicker_Loaded"
+                            ToolTip="{DynamicResource ChooseEndTime}"/>
                     </Border>
                 </StackPanel>
             </Grid>

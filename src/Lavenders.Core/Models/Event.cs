@@ -34,14 +34,26 @@ public class Event : ObservableObject
     public DateTime StartDateTime
     {
         get => _StartDateTime;
-        set => SetProperty(ref _StartDateTime, value);
+        set
+        {
+            if (SetProperty(ref _StartDateTime, value))
+                OnPropertyChanged(nameof(LocalStartDateTime));
+        }
     }
+
+    public DateTime LocalStartDateTime => StartDateTime.ToLocalTime();
 
     public DateTime EndDateTime
     {
         get => _EndDateTime;
-        set => SetProperty(ref _EndDateTime, value);
+        set
+        {
+            if (SetProperty(ref _EndDateTime, value))
+                OnPropertyChanged(nameof(LocalEndDateTime));
+        }
     }
+
+    public DateTime LocalEndDateTime => EndDateTime.ToLocalTime();
 
     public string Description
     {

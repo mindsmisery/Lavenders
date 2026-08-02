@@ -20,7 +20,10 @@
     <sys:String x:Key="DateLabel">Päivämäärä</sys:String>
     <sys:String x:Key="ChooseDate">Valitse päivä</sys:String>
     <sys:String x:Key="TimeLabel">Aika</sys:String>
+    <sys:String x:Key="StartTimeLabel">Alkamisaika</sys:String>
+    <sys:String x:Key="EndTimeLabel">Päättymisaika</sys:String>
     <sys:String x:Key="ChooseTime">Kirjoita aika tai valitse se kellosta</sys:String>
+    <sys:String x:Key="ChooseEndTime">Kirjoita päättymisaika tai valitse se kellosta</sys:String>
     <sys:String x:Key="DescriptionLabel">Kuvaus</sys:String>
     <sys:String x:Key="DescriptionPlaceholder">Kirjoita tapahtuman kuvaus...</sys:String>
     <sys:String x:Key="Delete">Poista</sys:String>
@@ -47,6 +50,7 @@
     <sys:String x:Key="ValidationTitleRequired">Anna tapahtumalle otsikko.</sys:String>
     <sys:String x:Key="ValidationDateRequired">Valitse tapahtumalle päivämäärä.</sys:String>
     <sys:String x:Key="ValidationTimeRequired">Valitse tapahtumalle kelvollinen aika.</sys:String>
+    <sys:String x:Key="ValidationEndTimeRequired">Päättymisajan on oltava alkamisajan jälkeen.</sys:String>
     <sys:String x:Key="LoadFailedTitle">Kalenteria ei voitu ladata</sys:String>
     <sys:String x:Key="LoadFailedMessage">Tietokantayhteydessä tapahtui virhe. Yritä hetken kuluttua uudelleen.</sys:String>
     <sys:String x:Key="EventAddedTitle">Tapahtuma lisätty</sys:String>

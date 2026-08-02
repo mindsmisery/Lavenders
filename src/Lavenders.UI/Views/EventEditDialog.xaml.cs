@@ -18,6 +18,14 @@ public partial class EventEditDialog : Window
 
     private void OK_Click(object sender, RoutedEventArgs e)
     {
+        // Commit a value still being edited inside the TimePicker before validation
+        // and event creation read it from the view model.
+        Keyboard.ClearFocus();
+        EventTimePicker.GetBindingExpression(
+            MaterialDesignThemes.Wpf.TimePicker.SelectedTimeProperty)?.UpdateSource();
+        EventEndTimePicker.GetBindingExpression(
+            MaterialDesignThemes.Wpf.TimePicker.SelectedTimeProperty)?.UpdateSource();
+
         if (DataContext is EventEditViewModel viewModel && !viewModel.Validate())
             return;
 

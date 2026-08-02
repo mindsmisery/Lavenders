@@ -25,9 +25,8 @@ namespace Lavenders.UI.ViewModels
         private bool _validationAttempted;
 
         private DateTime _selectedDate;
-        private string _selectedTime = string.Empty;
         private DateTime? _selectedClockTime;
-        private bool _isUpdatingClockTime;
+        private DateTime? _selectedEndClockTime;
 
         public string Title
         {
@@ -53,19 +52,19 @@ namespace Lavenders.UI.ViewModels
             {
                 _selectedDate = value;
                 OnPropertyChanged();
-                UpdateStartDateTime();
+                RebaseTimesOnSelectedDate();
             }
         }
 
+        // Kept as a text adapter for validation and callers that set HH:mm directly.
         public string SelectedTime
         {
-            get => _selectedTime;
+            get => SelectedClockTime?.ToString("HH:mm") ?? string.Empty;
             set
             {
-                _selectedTime = value;
                 OnPropertyChanged();
-                UpdateStartDateTime();
-                UpdateClockTime();
+                if (TimeSpan.TryParse(value, out var time))
+                    SelectedClockTime = SelectedDate.Date.Add(time);
             }
         }
 
@@ -85,11 +84,34 @@ namespace Lavenders.UI.ViewModels
             set
             {
                 if (_selectedClockTime == value) return;
-                _selectedClockTime = value;
+                var previousDuration = _selectedClockTime.HasValue && _selectedEndClockTime.HasValue
+                    ? _selectedEndClockTime.Value - _selectedClockTime.Value
+                    : (TimeSpan?)null;
+                _selectedClockTime = value.HasValue
+                    ? SelectedDate.Date.Add(value.Value.TimeOfDay)
+                    : null;
+                if (_selectedClockTime.HasValue && previousDuration > TimeSpan.Zero)
+                {
+                    _selectedEndClockTime = _selectedClockTime.Value.Add(previousDuration.Value);
+                    OnPropertyChanged(nameof(SelectedEndClockTime));
+                }
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedTime));
+                UpdateDateTimes();
+            }
+        }
 
-                if (!_isUpdatingClockTime && value.HasValue)
-                    SelectedTime = value.Value.ToString("HH:mm");
+        public DateTime? SelectedEndClockTime
+        {
+            get => _selectedEndClockTime;
+            set
+            {
+                if (_selectedEndClockTime == value) return;
+                _selectedEndClockTime = value.HasValue
+                    ? SelectedDate.Date.Add(value.Value.TimeOfDay)
+                    : null;
+                OnPropertyChanged();
+                UpdateDateTimes();
             }
         }
 
@@ -104,6 +126,17 @@ namespace Lavenders.UI.ViewModels
             }
         }
 
+        private DateTime _endDateTime;
+        public DateTime EndDateTime
+        {
+            get => _endDateTime;
+            private set
+            {
+                _endDateTime = value;
+                OnPropertyChanged();
+            }
+        }
+
         public EventEditViewModel()
             : this(DateTime.Now.Date)
         {
@@ -114,13 +147,11 @@ namespace Lavenders.UI.ViewModels
             _localization = localization;
             DeleteCommand = new RelayCommand<Window>(ExecuteDelete);
 
-            SelectedDate = selectedDate.Date;
-
             var now = DateTime.Now;
             var roundedMinutes = (now.Minute / 5) * 5;
-            SelectedTime = $"{now.Hour:D2}:{roundedMinutes:D2}";
-
-            UpdateStartDateTime();
+            SelectedDate = selectedDate.Date;
+            SelectedClockTime = SelectedDate.AddHours(now.Hour).AddMinutes(roundedMinutes);
+            SelectedEndClockTime = SelectedClockTime.Value.AddHours(1);
         }
 
         public EventEditViewModel(Event existingEvent, ILocalizationService? localization = null)
@@ -133,48 +164,31 @@ namespace Lavenders.UI.ViewModels
             Description = existingEvent.Description;
 
             var localStart = existingEvent.StartDateTime.ToLocalTime();
+            var localEnd = existingEvent.EndDateTime.ToLocalTime();
             SelectedDate = localStart.Date;
-            SelectedTime = $"{localStart.Hour:D2}:{localStart.Minute:D2}";
-
-            UpdateStartDateTime();
+            SelectedClockTime = localStart;
+            SelectedEndClockTime = localEnd;
         }
 
-        private void UpdateStartDateTime()
+        private void RebaseTimesOnSelectedDate()
         {
-            if (string.IsNullOrWhiteSpace(SelectedTime)) return;
-
-            var parts = SelectedTime.Split(':');
-            if (parts.Length != 2) return;
-
-            if (!int.TryParse(parts[0], out int hour) ||
-                !int.TryParse(parts[1], out int minute) ||
-                hour is < 0 or > 23 || minute is < 0 or > 59)
-                return;
-
-            StartDateTime = new DateTime(
-                SelectedDate.Year,
-                SelectedDate.Month,
-                SelectedDate.Day,
-                hour,
-                minute,
-                0,
-                DateTimeKind.Local);
-        }
-
-        private void UpdateClockTime()
-        {
-            if (_isUpdatingClockTime) return;
-
-            var parts = SelectedTime.Split(':');
-            if (parts.Length != 2 ||
-                !int.TryParse(parts[0], out var hour) ||
-                !int.TryParse(parts[1], out var minute))
-                return;
-
-            _isUpdatingClockTime = true;
-            _selectedClockTime = SelectedDate.Date.AddHours(hour).AddMinutes(minute);
+            if (_selectedClockTime.HasValue)
+                _selectedClockTime = SelectedDate.Date.Add(_selectedClockTime.Value.TimeOfDay);
+            if (_selectedEndClockTime.HasValue)
+                _selectedEndClockTime = SelectedDate.Date.Add(_selectedEndClockTime.Value.TimeOfDay);
             OnPropertyChanged(nameof(SelectedClockTime));
-            _isUpdatingClockTime = false;
+            OnPropertyChanged(nameof(SelectedEndClockTime));
+            UpdateDateTimes();
+        }
+
+        private void UpdateDateTimes()
+        {
+            StartDateTime = _selectedClockTime.HasValue
+                ? DateTime.SpecifyKind(SelectedDate.Date.Add(_selectedClockTime.Value.TimeOfDay), DateTimeKind.Local)
+                : default;
+            EndDateTime = _selectedEndClockTime.HasValue
+                ? DateTime.SpecifyKind(SelectedDate.Date.Add(_selectedEndClockTime.Value.TimeOfDay), DateTimeKind.Local)
+                : default;
         }
 
         public Event CreateEvent()
@@ -185,7 +199,7 @@ namespace Lavenders.UI.ViewModels
                 Title = Title.Trim(),
                 Description = Description.Trim(),
                 StartDateTime = StartDateTime.ToUniversalTime(),
-                EndDateTime = StartDateTime.AddHours(1).ToUniversalTime()
+                EndDateTime = EndDateTime.ToUniversalTime()
             };
         }
 
@@ -227,6 +241,12 @@ namespace Lavenders.UI.ViewModels
             if (StartDateTime == default)
             {
                 ValidationMessage = Localize("ValidationTimeRequired", "Valitse tapahtumalle kelvollinen aika.");
+                return false;
+            }
+
+            if (EndDateTime == default || EndDateTime <= StartDateTime)
+            {
+                ValidationMessage = Localize("ValidationEndTimeRequired", "End time must be after start time.");
                 return false;
             }
 
